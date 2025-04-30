@@ -7,7 +7,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class EcotrackApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(EcotrackApplication.class, args);
+		SpringApplication application = new SpringApplication(EcotrackApplication.class);
+
+		String env = System.getenv("SPRING_PROFILES_ACTIVE");
+		if (env == null) {
+			env = "dev";
+		}
+		application.setAdditionalProfiles(env);
+
+		application.run(args);
 	}
 
 }
