@@ -58,8 +58,7 @@ public class AuthenticationService {
 
     @Transactional
     public String registerCustomer(CustomerRegistrationDTO customerDTO) {
-        User user = createUser(customerDTO.getEmail(), customerDTO.getPhone(), customerDTO.getPassword(),
-                Role.CUSTOMER);
+        User user = createUser(customerDTO.getEmail(), customerDTO.getPhone(), customerDTO.getPassword(), Role.CUSTOMER);
 
         Customer customer = new Customer();
         customer.setFirstName(customerDTO.getFirstName());
