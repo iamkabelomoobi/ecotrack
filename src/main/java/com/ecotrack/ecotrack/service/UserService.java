@@ -196,28 +196,25 @@ public class UserService {
      */
     @Transactional
     public void updateUserContactDetails(Long userId, String email, String phone) {
-        // Fetch the user by ID
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
-        // Check for email uniqueness if provided
         if (email != null) {
             userRepository.findByEmail(email).ifPresent(existingUser -> {
                 if (!existingUser.getId().equals(userId)) {
                     throw new IllegalArgumentException("Email is already taken");
                 }
             });
-            user.setEmail(email); // Update email
+            user.setEmail(email);
         }
 
-        // Check for phone uniqueness if provided
         if (phone != null) {
             userRepository.findByPhone(phone).ifPresent(existingUser -> {
                 if (!existingUser.getId().equals(userId)) {
                     throw new IllegalArgumentException("Phone number is already taken");
                 }
             });
-            user.setPhone(phone); // Update phone
+            user.setPhone(phone); 
         }
 
         UserMapper.toDTO(userRepository.save(user));
