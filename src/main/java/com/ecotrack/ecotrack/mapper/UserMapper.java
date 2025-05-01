@@ -9,6 +9,7 @@ public class UserMapper {
                 .id(user.getId())
                 .email(user.getEmail())
                 .phone(user.getPhone())
+                .password(user.getPassword())
                 .role(user.getRole())
                 .build();
     }
@@ -18,6 +19,7 @@ public class UserMapper {
                 .id(userDTO.getId())
                 .email(userDTO.getEmail())
                 .phone(userDTO.getPhone())
+                .password(userDTO.getPassword())
                 .role(userDTO.getRole())
                 .build();
     }

@@ -39,4 +39,49 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Role role;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Admin admin;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Customer customer;
+
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Driver driver;
+
+    public void setAdmin(Admin admin) {
+        if (admin == null) {
+            if (this.admin != null) {
+                this.admin.setUser(null);
+            }
+        } else {
+            admin.setUser(this);
+            this.role = Role.ADMIN;
+        }
+        this.admin = admin;
+    }
+
+    public void setCustomer(Customer customer) {
+        if (customer == null) {
+            if (this.customer != null) {
+                this.customer.setUser(null);
+            }
+        } else {
+            customer.setUser(this);
+            this.role = Role.CUSTOMER;
+        }
+        this.customer = customer;
+    }
+
+    public void setDriver(Driver driver) {
+        if (driver == null) {
+            if (this.driver != null) {
+                this.driver.setUser(null);
+            }
+        } else {
+            driver.setUser(this);
+            this.role = Role.DRIVER;
+        }
+        this.driver = driver;
+    }
 }
