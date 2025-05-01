@@ -2,23 +2,42 @@ package com.ecotrack.ecotrack.mapper;
 
 import com.ecotrack.ecotrack.dto.CustomerDTO;
 import com.ecotrack.ecotrack.entity.Customer;
+import com.ecotrack.ecotrack.entity.Address;
+import org.springframework.stereotype.Component;
 
+@Component
 public class CustomerMapper {
-    public static CustomerDTO toDTO(Customer customer) {
+
+    private final AddressMapper addressMapper;
+
+    public CustomerMapper(AddressMapper addressMapper) {
+        this.addressMapper = addressMapper;
+    }
+
+    public CustomerDTO toDTO(Customer customer) {
         return CustomerDTO.builder()
                 .id(customer.getId())
                 .firstName(customer.getFirstName())
                 .lastName(customer.getLastName())
-                .user(UserMapper.toDTO(customer.getUser()))
+                .address(customer.getAddress() != null ? addressMapper.toDto(customer.getAddress()) : null)
+                .user(customer.getUser() != null ? UserMapper.toDTO(customer.getUser()) : null) // Static call
                 .build();
     }
 
-    public static Customer toEntity(CustomerDTO customerDTO) {
-        return Customer.builder()
+    public Customer toEntity(CustomerDTO customerDTO) {
+        Customer customer = Customer.builder()
                 .id(customerDTO.getId())
                 .firstName(customerDTO.getFirstName())
                 .lastName(customerDTO.getLastName())
-                .user(UserMapper.toEntity(customerDTO.getUser()))
+                .user(customerDTO.getUser() != null ? UserMapper.toEntity(customerDTO.getUser()) : null) // Static call
                 .build();
+
+        if (customerDTO.getAddress() != null) {
+            Address address = addressMapper.toEntity(customerDTO.getAddress());
+            address.setCustomer(customer);
+            customer.setAddress(address);
+        }
+
+        return customer;
     }
 }

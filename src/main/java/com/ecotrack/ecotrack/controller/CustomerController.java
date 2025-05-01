@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import com.ecotrack.ecotrack.config.security.resolver.CurrentUserId;
 import com.ecotrack.ecotrack.dto.CustomerDTO;
 import com.ecotrack.ecotrack.dto.UserDTO;
+import com.ecotrack.ecotrack.dto.AddressDTO;
 import com.ecotrack.ecotrack.service.CustomerService;
 import com.ecotrack.ecotrack.service.UserService;
 
@@ -105,6 +106,43 @@ public class CustomerController {
         }
 
         userService.updatePassword(userId, request.getCurrentPassword(), request.getNewPassword());
+        return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Create or update the address for the currently authenticated user.
+     *
+     * @param userId     The ID of the current user, extracted from the JWT.
+     * @param addressDTO The address details to create or update.
+     * @return The created or updated address details.
+     */
+    @PostMapping("/me/address")
+    public ResponseEntity<AddressDTO> createOrUpdateAddress(
+            @CurrentUserId Long userId,
+            @Valid @RequestBody AddressDTO addressDTO) {
+        return ResponseEntity.ok(customerService.createOrUpdateAddress(userId, addressDTO));
+    }
+
+    /**
+     * Get the address for the currently authenticated user.
+     *
+     * @param userId The ID of the current user, extracted from the JWT.
+     * @return The address details.
+     */
+    @GetMapping("/me/address")
+    public ResponseEntity<AddressDTO> getAddress(@CurrentUserId Long userId) {
+        return ResponseEntity.ok(customerService.getAddress(userId));
+    }
+
+    /**
+     * Delete the address for the currently authenticated user.
+     *
+     * @param userId The ID of the current user, extracted from the JWT.
+     * @return A 204 No Content response if the address was successfully deleted.
+     */
+    @DeleteMapping("/me/address")
+    public ResponseEntity<Void> deleteAddress(@CurrentUserId Long userId) {
+        customerService.deleteAddress(userId);
         return ResponseEntity.noContent().build();
     }
 
