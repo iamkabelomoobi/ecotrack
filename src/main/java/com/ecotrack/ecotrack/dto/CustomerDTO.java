@@ -10,5 +10,6 @@ public class CustomerDTO {
     private Long id;
     private String firstName;
     private String lastName;
+    private AddressDTO address;
     private UserDTO user;
 }

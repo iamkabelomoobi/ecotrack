@@ -12,31 +12,70 @@ import com.ecotrack.ecotrack.dto.*;
 import com.ecotrack.ecotrack.exception.*;
 import com.ecotrack.ecotrack.service.AuthenticationService;
 
+/**
+ * Controller for managing authentication-related operations.
+ */
 @RestController
 @RequestMapping("/api/auth")
 @RequiredArgsConstructor
 public class AuthController {
+
     private final AuthenticationService authenticationService;
 
-    @PostMapping("/register")
-    public ResponseEntity<AuthResponse> registerUser(@RequestBody @Valid UserRegistrationDTO registrationDTO) {
+    /**
+     * Registers a new admin user.
+     *
+     * @param registrationDTO The registration details for the admin.
+     * @return A response containing the authentication token and a success message.
+     */
+    @PostMapping("/register/admin")
+    public ResponseEntity<AuthResponse> registerAdmin(@RequestBody @Valid AdminRegistrationDTO registrationDTO) {
         try {
-            String token;
-            if (registrationDTO instanceof AdminRegistrationDTO) {
-                token = authenticationService.registerAdmin((AdminRegistrationDTO) registrationDTO);
-            } else if (registrationDTO instanceof CustomerRegistrationDTO) {
-                token = authenticationService.registerCustomer((CustomerRegistrationDTO) registrationDTO);
-            } else if (registrationDTO instanceof DriverRegistrationDTO) {
-                token = authenticationService.registerDriver((DriverRegistrationDTO) registrationDTO);
-            } else {
-                throw new UnsupportedRegistrationTypeException("Unsupported registration type");
-            }
-            return ResponseEntity.ok(new AuthResponse(token, "Registration successful"));
+            String token = authenticationService.registerAdmin(registrationDTO);
+            return ResponseEntity.ok(new AuthResponse(token, "Admin registration successful"));
         } catch (DuplicateException e) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new AuthResponse(null, e.getMessage()));
         }
     }
 
+    /**
+     * Registers a new customer user.
+     *
+     * @param registrationDTO The registration details for the customer.
+     * @return A response containing the authentication token and a success message.
+     */
+    @PostMapping("/register/customer")
+    public ResponseEntity<AuthResponse> registerCustomer(@RequestBody @Valid CustomerRegistrationDTO registrationDTO) {
+        try {
+            String token = authenticationService.registerCustomer(registrationDTO);
+            return ResponseEntity.ok(new AuthResponse(token, "Customer registration successful"));
+        } catch (DuplicateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new AuthResponse(null, e.getMessage()));
+        }
+    }
+
+    /**
+     * Registers a new driver user.
+     *
+     * @param registrationDTO The registration details for the driver.
+     * @return A response containing the authentication token and a success message.
+     */
+    @PostMapping("/register/driver")
+    public ResponseEntity<AuthResponse> registerDriver(@RequestBody @Valid DriverRegistrationDTO registrationDTO) {
+        try {
+            String token = authenticationService.registerDriver(registrationDTO);
+            return ResponseEntity.ok(new AuthResponse(token, "Driver registration successful"));
+        } catch (DuplicateException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new AuthResponse(null, e.getMessage()));
+        }
+    }
+
+    /**
+     * Authenticates a user and generates a JWT token.
+     *
+     * @param request The login request containing the user's email and password.
+     * @return A response containing the authentication token and a success message.
+     */
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody @Valid LoginRequest request) {
         try {
@@ -48,6 +87,13 @@ public class AuthController {
         }
     }
 
+    /**
+     * Refreshes an expired JWT token.
+     *
+     * @param request The refresh token request containing the expired token.
+     * @return A response containing the new authentication token and a success
+     *         message.
+     */
     @PostMapping("/refresh-token")
     public ResponseEntity<AuthResponse> refreshToken(@RequestBody @Valid RefreshTokenRequest request) {
         try {
@@ -59,12 +105,29 @@ public class AuthController {
         }
     }
 
+    /**
+     * Response object for authentication-related operations.
+     *
+     * @param token   The authentication token.
+     * @param message A message describing the result of the operation.
+     */
     public record AuthResponse(String token, String message) {
     }
 
+    /**
+     * Request object for user login.
+     *
+     * @param email    The user's email address.
+     * @param password The user's password.
+     */
     public record LoginRequest(@NotBlank String email, @NotBlank String password) {
     }
 
+    /**
+     * Request object for refreshing a JWT token.
+     *
+     * @param token The expired JWT token.
+     */
     public record RefreshTokenRequest(@NotBlank String token) {
     }
 }

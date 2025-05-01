@@ -185,6 +185,42 @@ public class UserService {
     }
 
     /**
+     * Updates a user's contact details.
+     *
+     * @param userId the ID of the user
+     * @param email  the new email
+     * @param phone  the new phone number
+     * @return the updated user as a DTO
+     * @throws IllegalArgumentException if the email or phone number is already
+     *                                  taken
+     */
+    @Transactional
+    public void updateUserContactDetails(Long userId, String email, String phone) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+
+        if (email != null) {
+            userRepository.findByEmail(email).ifPresent(existingUser -> {
+                if (!existingUser.getId().equals(userId)) {
+                    throw new IllegalArgumentException("Email is already taken");
+                }
+            });
+            user.setEmail(email);
+        }
+
+        if (phone != null) {
+            userRepository.findByPhone(phone).ifPresent(existingUser -> {
+                if (!existingUser.getId().equals(userId)) {
+                    throw new IllegalArgumentException("Phone number is already taken");
+                }
+            });
+            user.setPhone(phone); 
+        }
+
+        UserMapper.toDTO(userRepository.save(user));
+    }
+
+    /**
      * Updates a user's password.
      *
      * @param userId          the ID of the user

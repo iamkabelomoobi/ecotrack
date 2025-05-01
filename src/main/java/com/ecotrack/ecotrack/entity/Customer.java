@@ -1,5 +1,8 @@
 package com.ecotrack.ecotrack.entity;
 
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
+
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
@@ -38,7 +41,19 @@ public class Customer {
     @NotNull
     private User user;
 
-    @Column(name = "address")
-    private String address;
+    @OneToOne(mappedBy = "customer", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Address address;
+
+    public void setAddress(Address address) {
+        if (address == null) {
+            if (this.address != null) {
+                this.address.setCustomer(null);
+            }
+        } else {
+            address.setCustomer(this);
+        }
+        this.address = address;
+    }
 
 }
