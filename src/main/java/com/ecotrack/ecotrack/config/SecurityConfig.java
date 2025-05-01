@@ -15,6 +15,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import com.ecotrack.ecotrack.config.security.JwtTokenFilter;
 import com.ecotrack.ecotrack.config.security.JwtTokenProvider;
+import com.ecotrack.ecotrack.entity.User.Role;
 
 @Configuration
 @EnableWebSecurity
@@ -34,6 +35,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authz -> authz
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/customers/**").hasRole(Role.CUSTOMER.name())
                         .anyRequest().authenticated())
                 .addFilterBefore(jwtTokenFilter(), UsernamePasswordAuthenticationFilter.class);
 
