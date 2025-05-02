@@ -1,10 +1,13 @@
 package com.ecotrack.ecotrack.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.ecotrack.ecotrack.dto.DriverDTO;
 import com.ecotrack.ecotrack.entity.Driver;
 
+@Component
 public class DriverMapper {
-    public static DriverDTO toDTO(Driver driver) {
+    public DriverDTO toDTO(Driver driver) {
         return DriverDTO.builder()
                 .id(driver.getId())
                 .firstName(driver.getFirstName())
@@ -13,11 +16,11 @@ public class DriverMapper {
                 .vehicleType(driver.getVehicleType())
                 .vehicleRegistration(driver.getVehicleRegistration())
                 .isAvailable(driver.isAvailable())
-                .user(UserMapper.toDTO(driver.getUser()))
+                .user(driver.getUser() != null ? UserMapper.toDTO(driver.getUser()) : null)
                 .build();
     }
 
-    public static Driver toEntity(DriverDTO driverDTO) {
+    public Driver toEntity(DriverDTO driverDTO) {
         return Driver.builder()
                 .id(driverDTO.getId())
                 .firstName(driverDTO.getFirstName())
@@ -26,7 +29,7 @@ public class DriverMapper {
                 .vehicleType(driverDTO.getVehicleType())
                 .vehicleRegistration(driverDTO.getVehicleRegistration())
                 .isAvailable(driverDTO.isAvailable())
-                .user(UserMapper.toEntity(driverDTO.getUser()))
+                .user(driverDTO.getUser() != null ? UserMapper.toEntity(driverDTO.getUser()) : null)
                 .build();
     }
 }
