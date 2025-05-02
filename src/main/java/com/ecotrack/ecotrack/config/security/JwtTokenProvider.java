@@ -33,7 +33,7 @@ public class JwtTokenProvider {
                 .setSubject(userId.toString())
                 .claim("role", role)
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + expirationTimeMs)) // 24 hours
+                .setExpiration(new Date(System.currentTimeMillis() + expirationTimeMs))
                 .signWith(signingKey, SignatureAlgorithm.HS256)
                 .compact();
     }
@@ -42,7 +42,7 @@ public class JwtTokenProvider {
         try {
             Jwts.parserBuilder()
                     .setSigningKey(signingKey)
-                    .setAllowedClockSkewSeconds(60) // Allow 60 seconds of clock skew
+                    .setAllowedClockSkewSeconds(60)
                     .build()
                     .parseClaimsJws(token);
             return true;
