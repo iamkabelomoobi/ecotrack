@@ -1,24 +1,27 @@
 package com.ecotrack.ecotrack.mapper;
 
+import org.springframework.stereotype.Component;
+
 import com.ecotrack.ecotrack.dto.AdminDTO;
 import com.ecotrack.ecotrack.entity.Admin;
 
+@Component
 public class AdminMapper {
-    public static AdminDTO toDTO(Admin admin) {
+    public AdminDTO toDTO(Admin admin) {
         return AdminDTO.builder()
                 .id(admin.getId())
                 .firstName(admin.getFirstName())
                 .lastName(admin.getLastName())
-                .user(UserMapper.toDTO(admin.getUser()))
+                .user(admin.getUser() != null ? UserMapper.toDTO(admin.getUser()) : null)
                 .build();
     }
 
-    public static Admin toEntity(AdminDTO adminDTO) {
+    public Admin toEntity(AdminDTO adminDTO) {
         return Admin.builder()
                 .id(adminDTO.getId())
                 .firstName(adminDTO.getFirstName())
                 .lastName(adminDTO.getLastName())
-                .user(UserMapper.toEntity(adminDTO.getUser()))
+                .user(adminDTO.getUser() != null ? UserMapper.toEntity(adminDTO.getUser()) : null)
                 .build();
     }
 }

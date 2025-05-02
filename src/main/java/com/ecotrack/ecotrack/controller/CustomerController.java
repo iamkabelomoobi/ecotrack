@@ -1,7 +1,6 @@
 package com.ecotrack.ecotrack.controller;
 
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
@@ -14,6 +13,7 @@ import com.ecotrack.ecotrack.config.security.resolver.CurrentUserId;
 import com.ecotrack.ecotrack.dto.CustomerDTO;
 import com.ecotrack.ecotrack.dto.UserDTO;
 import com.ecotrack.ecotrack.dto.AddressDTO;
+import com.ecotrack.ecotrack.dto.ContactDetailsDTO;
 import com.ecotrack.ecotrack.service.CustomerService;
 import com.ecotrack.ecotrack.service.UserService;
 
@@ -82,10 +82,9 @@ public class CustomerController {
     @PatchMapping("/me/contact")
     public ResponseEntity<UserDTO> updateContactDetails(
             @CurrentUserId Long userId,
-            @RequestParam(required = false) @Email String email,
-            @RequestParam(required = false) @Pattern(regexp = "^\\+?[0-9]{10,15}$") String phone) {
+            @Valid @RequestBody ContactDetailsDTO contactDetails) {
 
-        userService.updateUserContactDetails(userId, email, phone);
+        userService.updateUserContactDetails(userId, contactDetails.getEmail(), contactDetails.getPhone());
         return ResponseEntity.noContent().build();
     }
 
