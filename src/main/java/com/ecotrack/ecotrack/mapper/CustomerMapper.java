@@ -20,7 +20,7 @@ public class CustomerMapper {
                 .firstName(customer.getFirstName())
                 .lastName(customer.getLastName())
                 .address(customer.getAddress() != null ? addressMapper.toDto(customer.getAddress()) : null)
-                .user(customer.getUser() != null ? UserMapper.toDTO(customer.getUser()) : null) // Static call
+                .user(customer.getUser() != null ? UserMapper.toDTO(customer.getUser()) : null)
                 .build();
     }
 
@@ -29,7 +29,7 @@ public class CustomerMapper {
                 .id(customerDTO.getId())
                 .firstName(customerDTO.getFirstName())
                 .lastName(customerDTO.getLastName())
-                .user(customerDTO.getUser() != null ? UserMapper.toEntity(customerDTO.getUser()) : null) // Static call
+                .user(customerDTO.getUser() != null ? UserMapper.toEntity(customerDTO.getUser()) : null)
                 .build();
 
         if (customerDTO.getAddress() != null) {

@@ -14,11 +14,16 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * Service class for managing user-related operations.
  */
 @Service
 public class UserService {
+
+    private static final Logger log = LoggerFactory.getLogger(UserService.class);
 
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
@@ -200,6 +205,7 @@ public class UserService {
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
         if (email != null) {
+            log.info("Updating email for userId {}: {}", userId, email);
             userRepository.findByEmail(email).ifPresent(existingUser -> {
                 if (!existingUser.getId().equals(userId)) {
                     throw new IllegalArgumentException("Email is already taken");
@@ -209,15 +215,17 @@ public class UserService {
         }
 
         if (phone != null) {
+            log.info("Updating phone for userId {}: {}", userId, phone);
             userRepository.findByPhone(phone).ifPresent(existingUser -> {
                 if (!existingUser.getId().equals(userId)) {
                     throw new IllegalArgumentException("Phone number is already taken");
                 }
             });
-            user.setPhone(phone); 
+            user.setPhone(phone);
         }
 
-        UserMapper.toDTO(userRepository.save(user));
+        log.info("Saving updated user details for userId {}", userId);
+        userRepository.save(user);
     }
 
     /**

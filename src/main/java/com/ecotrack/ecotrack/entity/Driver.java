@@ -45,6 +45,7 @@ public class Driver {
     @Column(unique = true)
     private String vehicleRegistration;
 
+    @Builder.Default
     @Column(name = "is_available", nullable = false)
     private boolean isAvailable = true;
 
